@@ -11,7 +11,7 @@ core = 7.x
 ; Download the RedHen Raiser install profile and recursively build all its dependencies:
 projects[redhen_raiser][type] = profile
 projects[redhen_raiser][download][type] = git
-projects[redhen_raiser][download][url] = "git@git.drupal.org:project/redhen_raiser.git"
+projects[redhen_raiser][download][url] = "https://github.com/thinkshout/redhen_raiser.git"
 projects[redhen_raiser][download][branch] = '7.x-1.x'
 
 
