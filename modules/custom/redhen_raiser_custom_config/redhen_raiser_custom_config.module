@@ -1,0 +1,58 @@
+<?php
+
+/**
+ * Install default content.
+ */
+function redhen_raiser_custom_default_content() {
+  $path = drupal_get_path('module', 'devel_generate');
+  require_once($path .'/devel_generate.inc');
+
+  // Load helper functions.
+  include_once 'sites/all/libraries/ts_install_helpers/ts_install_helpers.php';
+  include_once 'includes/redhen_raiser_custom_config.content.inc';
+  include_once 'includes/random_data.inc';
+
+  // Basic pages and menus.
+  $stubbed_nodes = raiser_sprint_stubbed_nodes();
+  $node_menu_items = ts_install_helpers_create_content($stubbed_nodes);
+  ts_install_helpers_create_menu_items($node_menu_items);
+
+  // Contacts.
+  $stubbed_contacts = raiser_sprint_stubbed_contacts(10);
+  $created_contacts = ts_install_helpers_create_entities($stubbed_contacts);
+  raiser_sprint_create_users_link_contacts($created_contacts);
+
+  // Enable iATS payment method.
+  raiser_sprint_add_sample_payment_method();
+
+  // Campaigns.
+  $stubbed_campaigns = raiser_sprint_stubbed_campaigns(10);
+  $created_campaigns = ts_install_helpers_create_entities($stubbed_campaigns);
+
+  // Team campaign pages.
+  $stubbed_campaign_pages_team = raiser_sprint_stubbed_campaign_pages($created_campaigns, $created_contacts, 60, 'team');
+  $created_campaign_pages_team = ts_install_helpers_create_entities($stubbed_campaign_pages_team);
+
+  // Individual campaign pages that reference teams.
+  $stubbed_campaign_pages_individual_team = raiser_sprint_stubbed_campaign_pages($created_campaigns, $created_contacts, 40, 'individual', $created_campaign_pages_team);
+  $created_campaign_pages_individual_team = ts_install_helpers_create_entities($stubbed_campaign_pages_individual_team);
+
+  // Individual campaign pages that do not reference teams.
+  $stubbed_campaign_pages_individual = raiser_sprint_stubbed_campaign_pages($created_campaigns, $created_contacts, 40, 'individual');
+  $created_campaign_pages_individual = ts_install_helpers_create_entities($stubbed_campaign_pages_individual);
+
+  // Campaign updates.
+  $stubbed_updates_team = raiser_sprint_stubbed_campaign_updates($created_campaigns, $created_campaign_pages_team, $created_campaign_pages_individual_team, 15);
+  $created_updates_team = ts_install_helpers_create_content($stubbed_updates_team, 'nodes');
+  $stubbed_updates_individual = raiser_sprint_stubbed_campaign_updates($created_campaigns, $created_campaign_pages_team, $created_campaign_pages_individual, 15);
+  $created_updates_individual = ts_install_helpers_create_content($stubbed_updates_individual, 'nodes');
+
+  $created_campaign_pages_all = array_merge(
+    $created_campaign_pages_team,
+    $created_campaign_pages_individual_team,
+    $created_campaign_pages_individual
+  );
+
+  // Donations.
+  raiser_sprint_create_sample_donations($created_contacts, $created_campaigns, 30, $created_campaign_pages_all);
+}

@@ -1,0 +1,15 @@
+name = RedHen Raiser Custom Configuration
+description = Redhen Raiser customizations specific to the RedHen Sprint.
+core = 7.x
+package = RedHen
+version = 7.x-1.0
+project = redhen_raiser_custom_config
+
+dependencies[] = commerce_payment_example
+dependencies[] = devel_generate
+
+; Additional RedHen modules.
+dependencies[] = redhen_dedupe
+dependencies[] = redhen_engagement
+dependencies[] = redhen_note
+dependencies[] = redhen_org
